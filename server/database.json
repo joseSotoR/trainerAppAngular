@@ -1,0 +1,71 @@
+{
+  "trainers": [
+    {
+      "id": 1,
+      "name": "a",
+      "reputation": "5",
+      "places": "1",
+      "currentPlaces": "0"
+    },
+    {
+      "id": 2,
+      "name": "b",
+      "reputation": "4",
+      "places": "2",
+      "currentPlaces": "0"
+    },
+    {
+      "id": 3,
+      "name": "c",
+      "reputation": "3",
+      "places": "3",
+      "currentPlaces": "0"
+    },
+    {
+      "id": 4,
+      "name": "d",
+      "reputation": "2",
+      "places": "4",
+      "currentPlaces": "0"
+    },
+    {
+      "id": 5,
+      "name": "E",
+      "reputation": "1",
+      "places": "1",
+      "currentPlaces": "0"
+    }
+  ],
+  "clients": [
+    {
+      "id": 1,
+      "name": "clien1",
+      "reputationNeeded": 6,
+      "trainer": 3
+    },
+    {
+      "id": 2,
+      "name": "clien2",
+      "reputationNeeded": 6,
+      "trainer": 3
+    },
+    {
+      "id": 3,
+      "name": "clien3",
+      "reputationNeeded": 3,
+      "trainer": 4
+    },
+    {
+      "id": 4,
+      "name": "clien4",
+      "reputationNeeded": 8,
+      "trainer": 2
+    },
+    {
+      "id": 5,
+      "name": "clien5",
+      "reputationNeeded": 5,
+      "trainer": 3
+    }
+  ]
+}

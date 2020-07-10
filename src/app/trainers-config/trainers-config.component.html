@@ -1,0 +1,60 @@
+<div class="container my-5">
+  <h1 class="mb-4 text-center">Pantalla de configuración</h1>
+<form [formGroup]="trainersForm" (ngSubmit)="onSubmit()">
+  <ul class="list-group">
+    <li *ngFor="let trainer of trainers; let i = index" class="list-group-item">
+      <div formGroupName="trainer{{trainer.id}}">
+        <p class="font-weight-bold">Entrenador {{trainer.id}}</p>
+        <div class="d-flex">
+          <span class="d-flex mr-4">
+            <p class="mr-2 mb-2">Nombre</p> <input id="name{{ trainer.id }}" formControlName="name" class="mb-3" />
+          </span>
+          <span class="d-flex  mr-4">
+            <p class="mr-2 mb-2">Valoración</p> <input id="reputation{{ trainer.id }}" formControlName="reputation" class="mb-3"/>
+          </span>
+          <span>
+            <div class="form-group d-flex">
+              <label for="exampleFormControlSelect1" class="mr-2">Máximo número de clientes </label>
+              <select id="places{{ trainer.id }}" formControlName="places" class="px-2">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </span>
+        </div>
+
+      </div>
+    </li>
+  </ul>
+  <footer class="d-flex justify-content-end mt-5">
+    <button type="button" class="btn btn-secondary mr-4" (click)="showClients()" data-toggle="modal" data-target="#clientModal">Ver tabla de clientes</button>
+    <button type="submit" class="btn btn-primary">Calcular resultados</button>
+  </footer>
+
+</form>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p *ngFor="let client of clients">{{ client.name }} con una necesidad de {{ client.reputationNeeded }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
