@@ -1,6 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\results",
+    "\\src\\app\\trainers-config"
   ],
+  "SelectedNode": "\\src\\app\\results\\results.component.ts",
   "PreviewInSolutionExplorer": false
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { DataService } from '../data.service';
-import { Trainer } from '../trainer';
-import { Client } from '../client';
+import { DataService } from '../services/data.service';
+import { Trainer } from '../models/trainer-model';
+import { Client } from '../models/client-model';
 
 @Component({
   selector: 'app-results',
@@ -11,104 +11,77 @@ import { Client } from '../client';
 })
 export class ResultsComponent implements OnInit {
 
+  newTrainer: Trainer;
+  newClient: Client;
+
   trainers: Trainer[] = [];
   clients: Client[] = [];
-  valTot: Number;
+  valTot: number;
 
   constructor(private dataService: DataService) { }
 
   ngOnInit(): void {
 
+
     this.getAllTrainers();
-    
+    this.getAllClients();
+    this.setClientsToTrainers();
   }
 
-  getAllTrainers() {
-    this.dataService.getAllTrainers().subscribe((data: Trainer[]) => {
-      this.trainers = data;
-      this.getAllClients();
-    })
+  public getAllTrainers(): void {
+        this.trainers = this.dataService.getAllTrainers();
   }
 
-  getAllClients() {
-    this.dataService.getAllClients().subscribe((data: Client[]) => {
-      this.clients = data;
-      this.setClientsToTrainers();
-
-    })
+  public getAllClients(): void {
+    this.clients = this.dataService.getAllClients();
   }
 
-  checkLimitPlaces(idTrainer, maxPlazas) {
-    var plazas = 0;
-    for (let j = 0; j < this.clients.length; j++) {
-      if (this.clients[j].trainer == idTrainer) {
-        plazas++;
-      }
-
-    }
-    if (plazas < Math.abs(maxPlazas)) { return true }
-    else { return false }
-  }
-  updateCurrentPlaces(idTrainer) {
-    for (let j = 0; j < this.trainers.length; j++) {
-      if (this.trainers[j].id == idTrainer) {
-        this.trainers[j].currentPlaces++;
-      }
-    }
-  }
-  getRep(idTrainer) {
-    for (let j = 0; j < this.trainers.length; j++) {
-      if (this.trainers[j].id == idTrainer) {
-        return this.trainers[j].reputation
-      }
-    }
-  }
-
-  setClientsToTrainers() {
-    let fullvallArr = [];
-
-    for (let j = 0; j < this.clients.length; j++) {
-      var client = this.clients[j];
-      var controllerProxim = 10;
-      for (let i = 0; i < this.trainers.length; i++) {
-        var trainer = this.trainers[i];
-        var rep = trainer.reputation;
-        if (this.checkLimitPlaces(trainer.id,trainer.places)){
-          if (Math.abs(rep - (client.reputationNeeded / 2)) < controllerProxim) {
-            controllerProxim = Math.abs(rep - client.reputationNeeded / 2);
-            client.trainer = trainer.id;
-          }
-          
+  public setClientsToTrainers(): void {
+    const arraySatisf = [];
+    for (const client of this.clients) {
+      const clientRepReq = client.repReq / 2;
+      let repDif = 10;
+      let trainerToClientId = 0;
+      for (const trainer of this.trainers) {
+        const trainerRep = trainer.reputacion;
+        if (trainer.plazasOcupadas < trainer.plazas && Math.abs(trainerRep - clientRepReq) < repDif) {
+          repDif = Math.abs(trainerRep - clientRepReq);
+          trainerToClientId = trainer.id;
         }
       }
-      this.updateCurrentPlaces(client.trainer);
-      this.dataService.update(trainer.id, trainer).subscribe();
-      this.dataService.updateClient(client.id, client).subscribe();
-      fullvallArr.push(
-        [client.name, client.reputationNeeded / 2, this.getRep(client.trainer)]
-      );
-      
+      this.updateTrainerPlaces(trainerToClientId);
+      this.updateCurrentClient(client, trainerToClientId);
+
+      arraySatisf.push(repDif);
+
     }
-    this.calcFullVal(fullvallArr);
+    this.getAllTrainers();
+    this.calcSatisfGlob(arraySatisf);
   }
 
-  calcFullVal(fullvallArr) {
-    var arrayTotalUsu = [];
-    for (var i = 0; i < fullvallArr.length; i++) {
-      var totalUsu = 100;
-      var dif = fullvallArr[i][1] - fullvallArr[i][2];
-      if (dif > 0) {
-        var restar = (dif / 0.5) * 5;
-        totalUsu = totalUsu-restar
-      }
-      arrayTotalUsu.push(totalUsu)
-    }
-    var total = 0;
-    for (var i = 0; i < arrayTotalUsu.length; i++) { total += arrayTotalUsu[i] }
-    this.valTot = total / arrayTotalUsu.length;
+
+  public updateTrainerPlaces(id): void {
+    this.newTrainer = this.dataService.getTrainerById(id)[0];
+    this.newTrainer.plazasOcupadas += 1;
+    this.dataService.updateTrainer(id, this.newTrainer);
   }
 
-  filterItems(trainerid) {
-    return this.clients.filter(x => x.trainer === trainerid)
+  public updateCurrentClient(client, trainerId): void {
+    this.newClient = this.dataService.getClientById(client.id)[0];
+    this.newClient.trainerId = trainerId;
+    this.dataService.updateClient(client.id, this.newClient);
+  }
+
+  public filterItems(trainerid): Client[] {
+    return this.clients.filter(x => x.trainerId === trainerid);
+  }
+
+  public calcSatisfGlob(arraySatisf): void {
+    let totalSatisf = 0;
+    for (let i = 0; i < arraySatisf.length; i++) {
+      const userSatisf = (100 - Math.round(arraySatisf[i] / 0.5) * 10);
+      totalSatisf += userSatisf;
+    }
+    this.valTot = totalSatisf / arraySatisf.length;
   }
 }

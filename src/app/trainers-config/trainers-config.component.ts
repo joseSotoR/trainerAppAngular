@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { DataService } from '../data.service';
-import { Trainer } from '../trainer';
-import { Client } from '../client';
+import { DataService } from '../services/data.service';
+import { Trainer } from '../models/trainer-model';
+import { Client } from '../models/client-model';
 
 import { FormGroup, FormControl } from '@angular/forms';
 
@@ -19,14 +19,6 @@ export class TrainersConfigComponent implements OnInit {
 
   trainers: Trainer[] = [];
   clients: Client[] = [];
-
-  newTrainer: Trainer = {
-    id: 0,
-    name: "new",
-    reputation: 0,
-    places: 0,
-    currentPlaces: 0
-  }
 
   trainersForm = new FormGroup({
     trainer1: new FormGroup({
@@ -54,52 +46,42 @@ export class TrainersConfigComponent implements OnInit {
       reputation: new FormControl(''),
       places: new FormControl('')
     })
-  })
+  });
 
-  constructor(public dataService: DataService, private router: Router) { }
+  constructor(public dataService: DataService, private router: Router) {}
 
 
 
   ngOnInit(): void {
-    this.getAllTrainers()
+    this.getAllTrainers();
   }
 
-  getAllTrainers() {
-    this.dataService.getAllTrainers().subscribe((data: Trainer[]) => {
-      this.trainers = data;
-    })
+  public getAllTrainers(): void {
+    this.trainers = this.dataService.getAllTrainers();
   }
-  addTrainer() {
-
-    this.dataService.createTrainer(this.newTrainer).subscribe(res => {
-      this.getAllTrainers();
-    })
-  }
-  onSubmit() {
-    let trainers = JSON.parse(JSON.stringify(this.trainersForm.value));
-    var i = 1;
-    for (let trainer in trainers) {
-      
-
-      this.newTrainer.id = i;
-      this.newTrainer.name = trainers[trainer].name;
-      this.newTrainer.reputation = trainers[trainer].reputation;
-      this.newTrainer.places = trainers[trainer].places;
-      this.newTrainer.currentPlaces = trainers[trainer].currentPlaces;
-      this.dataService.update(this.newTrainer.id, this.newTrainer).subscribe();
-      i++
+  public onSubmit(): void {
+    const trainers = JSON.parse(JSON.stringify(this.trainersForm.value));
+    let i = 1;
+    for (const trainer in trainers) {
+      const t = new Trainer(
+        i,
+        trainers[trainer].name,
+        trainers[trainer].places,
+        0,
+        trainers[trainer].reputation,
+        'https://i.pinimg.com/236x/6b/e6/f8/6be6f8b7f766d5e8be2ed74ab23d871e--silhouette-vinyl-cutting-files.jpg'
+      );
+      this.dataService.updateTrainer(t.id, t);
+      i++;
     }
-
     this.router.navigate(['/results']);
   }
 
 
-  getAllClients() {
-    this.dataService.getAllClients().subscribe((data: Client[]) => {
-      this.clients = data;
-    })
+  public getAllClients(): void {
+    this.clients = this.dataService.getAllClients();
   }
-  showClients() {
+  public showClients(): void {
     this.getAllClients();
   }
 

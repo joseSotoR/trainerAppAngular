@@ -7,7 +7,7 @@ import { ResultsComponent } from './results/results.component';
 
 const routes: Routes = [
 
-  { path: '', redirectTo: "/configuration", pathMatch: 'full'},
+  { path: '', redirectTo: '/configuration', pathMatch: 'full'},
   { path: 'configuration', component: TrainersConfigComponent },
   { path: 'results', component: ResultsComponent },
 
