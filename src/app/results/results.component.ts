@@ -45,8 +45,6 @@ export class ResultsComponent implements OnInit {
       let trainerToClientId = 0;
       for (const trainer of this.trainers) {
         const trainerRep = trainer.reputacion;
-        console.log("lalalalala")
-        console.log(trainer)
         if (trainer.plazasOcupadas < trainer.plazas && Math.abs(trainerRep - clientRepReq) < repDif) {
           repDif = Math.abs(trainerRep - clientRepReq);
           trainerToClientId = trainer.id;
