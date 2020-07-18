@@ -63,6 +63,7 @@ export class TrainersConfigComponent implements OnInit {
     const trainers = JSON.parse(JSON.stringify(this.trainersForm.value));
     let i = 1;
     for (const trainer in trainers) {
+      if (trainers[trainer].places === '') { trainers[trainer].places = 0;}
       const t = new Trainer(
         i,
         trainers[trainer].name,

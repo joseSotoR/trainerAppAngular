@@ -11,12 +11,13 @@ import { Client } from '../models/client-model';
 })
 export class ResultsComponent implements OnInit {
 
-  newTrainer: Trainer;
-  newClient: Client;
+  public newTrainer: Trainer;
+  private newClient: Client;
+  public clientsPerTrainer: number;
 
-  trainers: Trainer[] = [];
-  clients: Client[] = [];
-  valTot: number;
+  public trainers: Trainer[] = [];
+  public clients: Client[] = [];
+  public valTot: number;
 
   constructor(private dataService: DataService) { }
 
@@ -44,11 +45,15 @@ export class ResultsComponent implements OnInit {
       let trainerToClientId = 0;
       for (const trainer of this.trainers) {
         const trainerRep = trainer.reputacion;
+        console.log("lalalalala")
+        console.log(trainer)
         if (trainer.plazasOcupadas < trainer.plazas && Math.abs(trainerRep - clientRepReq) < repDif) {
           repDif = Math.abs(trainerRep - clientRepReq);
           trainerToClientId = trainer.id;
+          
         }
       }
+      
       this.updateTrainerPlaces(trainerToClientId);
       this.updateCurrentClient(client, trainerToClientId);
 
@@ -59,9 +64,9 @@ export class ResultsComponent implements OnInit {
     this.calcSatisfGlob(arraySatisf);
   }
 
-
   public updateTrainerPlaces(id): void {
     this.newTrainer = this.dataService.getTrainerById(id)[0];
+
     this.newTrainer.plazasOcupadas += 1;
     this.dataService.updateTrainer(id, this.newTrainer);
   }
