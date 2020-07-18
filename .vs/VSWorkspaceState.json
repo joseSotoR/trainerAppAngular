@@ -3,6 +3,7 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\models",
     "\\src\\app\\results",
     "\\src\\app\\trainers-config"
   ],
